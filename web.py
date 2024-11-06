@@ -20,8 +20,8 @@ features_path = "features.pkl"
 image_dir = "./static/images"
 
 kmeans_paths = {
-    '2': "./models/kmeans_model.pkl",
-    '3': "./models/kmeans_model1.pkl"
+    '2': "./models/kmeans_model2.pkl",
+    '3': "./models/kmeans_model3.pkl"
 }
 
 directory = "zeroShot_vkiit"
