@@ -2,7 +2,7 @@ from flask import Flask, request, render_template, jsonify
 import os
 import numpy as np
 from PIL import Image
-from keras.models import load_model
+from keras.src.models import load_model
 from sklearn.preprocessing import StandardScaler
 import pickle
 from sklearn.metrics import silhouette_score, davies_bouldin_score, adjusted_rand_score, normalized_mutual_info_score
