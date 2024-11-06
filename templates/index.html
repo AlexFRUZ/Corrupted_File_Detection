@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Classification and Clustering Results</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function toggleImage(checkbox, graph) {
+            const numClusters = document.getElementById('clusters').value;
+            const imgId = `${graph}-${numClusters}`;
+            let image = document.getElementById(imgId);
+
+            if (checkbox.checked) {
+                if (!image) {
+                    // Create image element if it doesn't exist
+                    const imgSrc = `/static/${graph}${numClusters}.jpg`;
+                    image = document.createElement('img');
+                    image.src = imgSrc;
+                    image.alt = graph;
+                    image.className = 'img-fluid my-3 col-md-6 fade-in'; 
+                    image.id = imgId;
+                    document.getElementById('cluster-images').appendChild(image);
+                }
+                image.style.display = 'block';
+                image.classList.add('fade-in');
+            } else {
+                if (image) {
+                    image.style.display = 'none';
+                }
+            }
+        }
+
+        function toggleDescription(metric) {
+            const descriptionId = metric + '-description';
+            const descriptionElement = document.getElementById(descriptionId);
+            descriptionElement.style.display = descriptionElement.style.display === 'none' ? 'block' : 'none';
+        }
+    </script>
+</head>
+<body>
+    <div class="container mt-4">
+        <h1 class="text-center">Image Classification and Clustering Results</h1>
+        <form action="{{ url_for('upload_image') }}" method="POST" enctype="multipart/form-data" class="mt-4">
+            <div class="form-group">
+                <input type="file" class="form-control-file" name="file" accept="image/*" required>
+            </div>
+            <div class="form-group">
+                <label for="classes">Select number of classes:</label>
+                <select name="classes" id="classes" class="form-control" required>
+                    <option value="2">2 Classes</option>
+                    <option value="3">3 Classes</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Upload</button>
+        </form>
+
+        {% if image_path %}
+        <div class="mt-4">
+            <h2>Classification Result</h2>
+            <img src="{{ url_for('static', filename='images/' ~ image_path) }}" class="img-fluid my-3" alt="Uploaded Image" width="250" height="250">
+            <h2>Prediction: {{ predicted_class }}</h2>
+            <p>Probability: {{ predicted_probabilities }}</p>
+            <p>{{ message }}</p>
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Clustering Section -->
+    <div class="container mt-5">
+        <h1>Data Clustering</h1>
+        <form method="POST" action="/predict">
+            <div class="form-group">
+                <label for="clusters">Select number of clusters:</label>
+                <select name="clusters" id="clusters" class="form-control">
+                    <option value="2">2 Clusters</option>
+                    <option value="3">3 Clusters</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Run Clustering</button>
+        </form>
+
+        <h2 class="mt-4">Clustering Results</h2>
+
+        <form id="graph-selection-form">
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="graphs" value="clusters_distribution" onchange="toggleImage(this, 'clusters_distribution')" id="clusters_distribution">
+                <label class="form-check-label" for="clusters_distribution">Clusters Distribution</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="graphs" value="silhouette_plot" onchange="toggleImage(this, 'silhouette_plot')" id="silhouette_plot">
+                <label class="form-check-label" for="silhouette_plot">Silhouette Plot</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="graphs" value="elbow_method" onchange="toggleImage(this, 'elbow_method')" id="elbow_method">
+                <label class="form-check-label" for="elbow_method">Elbow Method</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="graphs" value="cluster_means_heatmap" onchange="toggleImage(this, 'cluster_means_heatmap')" id="cluster_means_heatmap">
+                <label class="form-check-label" for="cluster_means_heatmap">Cluster Means Heatmap</label>
+            </div>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" name="graphs" value="parallel_coordinates" onchange="toggleImage(this, 'parallel_coordinates')" id="parallel_coordinates">
+                <label class="form-check-label" for="parallel_coordinates">Parallel Coordinates</label>
+            </div>
+        </form>
+
+        <div id="cluster-images" class="row mt-4"></div>
+
+        <div id="metrics-display" class="mt-4">
+            <h3>Clustering Metrics</h3>
+            {% if metrics %}
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Value</th>
+                            <th>Details</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><a href="javascript:void(0)" onclick="toggleDescription('silhouette_avg')">Silhouette Average</a></td>
+                            <td>{{ metrics.silhouette_avg }}</td>
+                            <td><span id="silhouette_avg-description" style="display:none;">Measures how similar an object is to its own cluster compared to other clusters.</span></td>
+                        </tr>
+                        <tr>
+                            <td><a href="javascript:void(0)" onclick="toggleDescription('davies_bouldin')">Davies-Bouldin Index</a></td>
+                            <td>{{ metrics.davies_bouldin }}</td>
+                            <td><span id="davies_bouldin-description" style="display:none;">A lower value indicates better clustering, as it signifies less overlap between clusters.</span></td>
+                        </tr>
+                        <tr>
+                            <td><a href="javascript:void(0)" onclick="toggleDescription('ari')">Adjusted Rand Index</a></td>
+                            <td>{{ metrics.ari }}</td>
+                            <td><span id="ari-description" style="display:none;">Measures the similarity between two data clusterings, adjusted for chance.</span></td>
+                        </tr>
+                        <tr>
+                            <td><a href="javascript:void(0)" onclick="toggleDescription('nmi')">Normalized Mutual Information</a></td>
+                            <td>{{ metrics.nmi }}</td>
+                            <td><span id="nmi-description" style="display:none;">Measures the amount of information obtained about one clustering from the other.</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Results will be displayed here...</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

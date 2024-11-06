@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Results</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function toggleImage(checkbox, imageId) {
+            const image = document.getElementById(imageId);
+            if (checkbox.checked) {
+                image.style.display = 'block';
+                image.classList.add('fade-in');
+            } else {
+                image.style.display = 'none';
+                image.classList.remove('fade-in');
+            }
+        }
+    </script>
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Classification Result</h1>
+
+        <!-- Determine message based on predicted_class -->
+        {% if predicted_class == 'Nominal data' %}
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong>Prediction:</strong> {{ predicted_class }}<br>
+                <strong>Message:</strong> This is normal data.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% elif predicted_class == 'Transition data' %}
+            <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                <strong>Prediction:</strong> {{ predicted_class }}<br>
+                <strong>Message:</strong> You should pay more attention to this data because it is on the verge of breaking.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% else %}
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Prediction:</strong> {{ predicted_class }}<br>
+                <strong>Message:</strong> This is corrupted data.
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+        {% endif %}
+
+        <div class="card mb-4">
+            <img class="card-img-top" src="{{ url_for('static', filename='images/' ~ image_path) }}" alt="Uploaded Image">
+            <div class="card-body">
+                <h2 class="card-title">Prediction: {{ predicted_class }}</h2>
+                <p class="card-text">Probability: {{ predicted_probabilities }}</p>
+            </div>
+        </div>
+
+        <h2 class="mb-3">Select plots to display:</h2>
+        <form class="mb-4">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="confusion_matrix_checkbox" onchange="toggleImage(this, 'confusion_matrix')" value="confusion_matrix">
+                <label class="form-check-label" for="confusion_matrix_checkbox">Confusion Matrix</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="precision_recall_checkbox" onchange="toggleImage(this, 'precision_recall')" value="precision_recall">
+                <label class="form-check-label" for="precision_recall_checkbox">Precision-Recall Curve</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="roc_curve_checkbox" onchange="toggleImage(this, 'roc_curve')" value="roc_curve">
+                <label class="form-check-label" for="roc_curve_checkbox">ROC Curve</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="scatter_plot_checkbox" onchange="toggleImage(this, 'scatter_plot')" value="scatter_plot">
+                <label class="form-check-label" for="scatter_plot_checkbox">Scatter Plot</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="accuracy_loss_checkbox" onchange="toggleImage(this, 'accuracy_loss')" value="accuracy_loss">
+                <label class="form-check-label" for="accuracy_loss_checkbox">Accuracy-Loss Curve</label>
+            </div>
+        </form>
+
+        <!-- Display selected plots based on class type -->
+        <div class="row">
+            {% if optimal_classes == '2' %}
+                <div class="col-md-6 mb-3">
+                    <img id="confusion_matrix" class="img-fluid" src="{{ url_for('static', filename='show_plots/matrix.jpg') }}" alt="Confusion Matrix" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="precision_recall" class="img-fluid" src="{{ url_for('static', filename='show_plots/precision_recall.jpg') }}" alt="Precision-Recall Curve" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="roc_curve" class="img-fluid" src="{{ url_for('static', filename='show_plots/roc_curve.jpg') }}" alt="ROC Curve" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="scatter_plot" class="img-fluid" src="{{ url_for('static', filename='show_plots/scatter_plot.jpg') }}" alt="Scatter Plot" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="accuracy_loss" class="img-fluid" src="{{ url_for('static', filename='show_plots/accuracy_loss.jpg') }}" alt="Accuracy-Loss Curve" style="display: none;">
+                </div>
+            {% elif optimal_classes == '3' %}
+                <div class="col-md-6 mb-3">
+                    <img id="confusion_matrix" class="img-fluid" src="{{ url_for('static', filename='show_plots/matrix1.jpg') }}" alt="Confusion Matrix" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="precision_recall" class="img-fluid" src="{{ url_for('static', filename='show_plots/precision_recall1.jpg') }}" alt="Precision-Recall Curve" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="roc_curve" class="img-fluid" src="{{ url_for('static', filename='show_plots/roc_curve1.jpg') }}" alt="ROC Curve" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="scatter_plot" class="img-fluid" src="{{ url_for('static', filename='show_plots/scatter_plot1.jpg') }}" alt="Scatter Plot" style="display: none;">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <img id="accuracy_loss" class="img-fluid" src="{{ url_for('static', filename='show_plots/accuracy_loss1.jpg') }}" alt="Accuracy-Loss Curve" style="display: none;">
+                </div>
+            {% endif %}
+        </div>
+
+        <a href="{{ url_for('index') }}" class="btn btn-primary mt-3">Classify Another Image</a>
+    </div>
+</body>
+</html>
