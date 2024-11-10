@@ -3,6 +3,11 @@
 ## Description
 This project was developed to detect corrupted files using various approaches, including machine learning algorithms (K-means clustering) and deep learning (convolutional neural networks). To enhance usability, a web application was created on the Flask framework, providing a convenient interface for file integrity analysis
 
+## Authors
+
+Zalutska O. O. – PhD student of the Department of Computer Sciences, Khmelnytskyi National University, Khmelnytskyi, Ukraine.
+
+Hladun O М. – student of the Department of Computer Sciences, Khmelnytskyi National University, Khmelnytskyi, Ukraine.
 ### Folder and File Descriptions
 
 #### 1. `models/`
