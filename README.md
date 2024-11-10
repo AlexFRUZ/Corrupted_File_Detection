@@ -1,7 +1,7 @@
 # THE METHOD OF PREVENTING FAILURES OF ROTATING MACHINES BASED ON VIBRATION ANALYSIS BY USING MACHINE LEARNING TECHNIQUES
 
 ## Description
-Repository includesThis project was developed to detect corrupted files using various approaches, including machine learning algorithms (K-means clustering) and deep learning (convolutional neural networks). To enhance usability, a web application was created on the Flask framework, providing a convenient interface for file integrity analysis
+The repository includes a project for the all-Ukrainian competition of young scientists in the field of smart IT 2024. This project was developed to detect corrupted files using various approaches, including machine learning algorithms (K-means clustering) and deep learning (convolutional neural networks). To enhance usability, a web application was created on the Flask framework, providing a convenient interface for file integrity analysis
 
 ## Authors
 
