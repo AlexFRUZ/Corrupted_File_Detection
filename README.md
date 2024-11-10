@@ -7,7 +7,7 @@ Repository includesThis project was developed to detect corrupted files using va
 
 Zalutska O.O. – Assistant of the Department of Computer Sciences, Khmelnytskyi National University, Khmelnytskyi, Ukraine.
 
-Hladun O М. – student of the Department of Computer Sciences, Khmelnytskyi National University, Khmelnytskyi, Ukraine.
+Hladun O. V. – student of the Department of Computer Sciences, Khmelnytskyi National University, Khmelnytskyi, Ukraine.
 
 ### Folder and File Descriptions
 
